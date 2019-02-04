@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NotesApp.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,12 +20,18 @@ namespace NotesApp.ViewModel.Commands
 
         public bool CanExecute(object parameter)
         {
-            return true;
+            //NotesWindow의 CommandParameter를 SelectedNotebook과 바인딩 하였으므로, 여기에 넘어오는 인자가 SelectedNotebook 객체임
+            Notebook selectedNotebook = parameter as Notebook;
+            if(selectedNotebook != null)
+                return true;
+
+            return false;
         }
 
         public void Execute(object parameter)
         {
-            //TODO : 새 노트 생성
+            Notebook selectedNotebook = parameter as Notebook;
+            VM.CreateNote(selectedNotebook.Id);
         }
     }
 }

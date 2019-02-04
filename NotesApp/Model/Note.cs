@@ -45,6 +45,18 @@ namespace NotesApp.Model
             }
         }
 
+        private DateTime createdTime;
+
+        public DateTime CreatedTime
+        {
+            get { return createdTime; }
+            set {
+                createdTime = value;
+                OnPropertyChanged("CreatedTime");
+            }
+        }
+
+
         private DateTime updatedTime;
 
         public DateTime UpdatedTime

@@ -24,7 +24,7 @@ namespace NotesApp.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            //TODO : 새로운 노트북 생성
+            VM.CreateNotebook();
         }
     }
 }

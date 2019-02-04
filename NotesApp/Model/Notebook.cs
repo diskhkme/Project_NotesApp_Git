@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace NotesApp.Model
     public class Notebook : INotifyPropertyChanged
     {
         private int id;
-
+        [PrimaryKey, AutoIncrement]
         public int Id
         {
             get { return id; }
@@ -23,6 +24,7 @@ namespace NotesApp.Model
 
         private int userId;
         //자신이 속한 User의 ID
+        [Indexed]
         public int UserId
         {
             get { return userId; }

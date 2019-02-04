@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NotesApp.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,16 @@ namespace NotesApp.View
         public LoginWindow()
         {
             InitializeComponent();
+
+            //Custum Event를 만들어 주었기 때문에, 핸들을 등록하기 위해 코드를 사용
+            LoginVM vm = new LoginVM();
+            containderGrid.DataContext = vm;
+            vm.HasLoggedIn += Vm_HasLoggedIn;
+        }
+
+        private void Vm_HasLoggedIn(object sender, EventArgs e)
+        {
+            this.Close();
         }
 
         private void haveAccountButton_Click(object sender, RoutedEventArgs e)

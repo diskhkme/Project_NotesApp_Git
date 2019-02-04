@@ -21,8 +21,11 @@ namespace NotesApp.ViewModel
         public RegisterCommand RegisterCommand { get; set; }
         public LoginCommand LoginCommand { get; set; }
 
+        public event EventHandler HasLoggedIn;
+
         public LoginVM()
         {
+            User = new User();
             RegisterCommand = new RegisterCommand(this);
             LoginCommand = new LoginCommand(this);
         }
@@ -37,7 +40,8 @@ namespace NotesApp.ViewModel
 
                 if (user.Password == User.Password)
                 {
-                    //TODO : 로그인 프로세스
+                    App.UserId = User.Id.ToString();
+                    HasLoggedIn(this, new EventArgs());
                 }
             }
         }
@@ -48,11 +52,12 @@ namespace NotesApp.ViewModel
             {
                 conn.CreateTable<User>();
 
-                var result = DatabaseHelper.Insert(user);
+                var result = DatabaseHelper.Insert(User);
 
                 if(result)
                 {
-                    //TODO : 등록 프로세스
+                    App.UserId = User.Id.ToString();
+                    HasLoggedIn(this, new EventArgs());
                 }
             }
         }

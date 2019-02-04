@@ -26,5 +26,35 @@ namespace NotesApp.ViewModel
             RegisterCommand = new RegisterCommand(this);
             LoginCommand = new LoginCommand(this);
         }
+
+        public void Login()
+        {
+            using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(DatabaseHelper.dbFile))
+            {
+                conn.CreateTable<User>();
+
+                conn.Table<User>().Where(u => u.Username == User.Username).FirstOrDefault();
+
+                if (user.Password == User.Password)
+                {
+                    //TODO : 로그인 프로세스
+                }
+            }
+        }
+
+        public void Register()
+        {
+            using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(DatabaseHelper.dbFile))
+            {
+                conn.CreateTable<User>();
+
+                var result = DatabaseHelper.Insert(user);
+
+                if(result)
+                {
+                    //TODO : 등록 프로세스
+                }
+            }
+        }
     }
 }

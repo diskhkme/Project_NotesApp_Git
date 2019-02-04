@@ -49,17 +49,18 @@
         </ListView>
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
-                <Button Content="Speech"
+                <ToggleButton Content="Speech"
                         Click="speechButtonClick"/>
-                <Button x:Name="boldButton"
+                <ToggleButton x:Name="boldButton"
                         Click="boldButton_Click">
                     <TextBlock Text="B"
                            FontWeight="Bold"/>
-                </Button>
+                </ToggleButton>
             </ToolBar>
         </ToolBarTray>
         <Grid>
             <RichTextBox x:Name="contentRichTextBox"
+                         SelectionChanged="contentRichTextBox_SelectionChanged"
                          TextChanged="contentRichTextBox_TextChanged"/>
         </Grid>
         

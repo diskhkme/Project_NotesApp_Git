@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -22,7 +23,6 @@ namespace NotesApp.View
     public partial class NotesWindow : Window
     {
         SpeechRecognitionEngine recognizer;
-        bool isRecognizing = false;
 
         public NotesWindow()
         {
@@ -70,21 +70,36 @@ namespace NotesApp.View
 
         private void boldButton_Click(object sender, RoutedEventArgs e)
         {
-            contentRichTextBox.Selection.ApplyPropertyValue(Inline.FontWeightProperty, FontWeights.Bold);
+            bool isButtonChecked = (sender as ToggleButton).IsChecked ?? false;
+            if(isButtonChecked)
+            {
+                contentRichTextBox.Selection.ApplyPropertyValue(Inline.FontWeightProperty, FontWeights.Bold);
+            }
+            else
+            {
+                contentRichTextBox.Selection.ApplyPropertyValue(Inline.FontWeightProperty, FontWeights.Normal);
+            }
+            
         }
 
         private void speechButtonClick(object sender, RoutedEventArgs e)
         {
-            if(!isRecognizing)
+            //우측은 nullable bool 타입.
+            bool isButtonChecked = (sender as ToggleButton).IsChecked ?? false;
+            if(isButtonChecked)
             {
                 recognizer.RecognizeAsync(RecognizeMode.Multiple);
-                isRecognizing = true;
             }
             else
             {
                 recognizer.RecognizeAsyncStop();
-                isRecognizing = false;
             }
+        }
+
+        private void contentRichTextBox_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            var selectedState = contentRichTextBox.Selection.GetPropertyValue(Inline.FontWeightProperty);
+            boldButton.IsChecked = (selectedState != DependencyProperty.UnsetValue) && selectedState.Equals(FontWeights.Bold);
         }
     }
 }

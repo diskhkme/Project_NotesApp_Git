@@ -46,7 +46,12 @@ namespace NotesApp.View
                 recognizer.SetInputToDefaultAudioDevice();
                 recognizer.SpeechRecognized += Recofnizer_SpeechRecognized;
             }
-            
+
+            var fontFamilies = Fonts.SystemFontFamilies.OrderBy(f => f.Source);
+            fontFamilyComboBox.ItemsSource = fontFamilies;
+
+            List<double> fontSizes = new List<double>() { 8, 9, 10, 11, 12, 14, 16, 28, 32, 40 };
+            fontSizeComboBox.ItemsSource = fontSizes;
         }
 
         private void Recofnizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
@@ -100,6 +105,23 @@ namespace NotesApp.View
         {
             var selectedState = contentRichTextBox.Selection.GetPropertyValue(Inline.FontWeightProperty);
             boldButton.IsChecked = (selectedState != DependencyProperty.UnsetValue) && selectedState.Equals(FontWeights.Bold);
+
+            fontFamilyComboBox.SelectedItem = contentRichTextBox.Selection.GetPropertyValue(Inline.FontFamilyProperty);
+
+            fontSizeComboBox.Text = (contentRichTextBox.Selection.GetPropertyValue(Inline.FontSizeProperty)).ToString();
+        }
+
+        private void fontFamilyComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(fontFamilyComboBox.SelectedItem != null)
+            {
+                contentRichTextBox.Selection.ApplyPropertyValue(Inline.FontFamilyProperty, fontFamilyComboBox.SelectedItem);
+            }
+        }
+
+        private void fontSizeComboBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            contentRichTextBox.Selection.ApplyPropertyValue(Inline.FontSizeProperty, fontSizeComboBox.Text);
         }
     }
 }

@@ -12,6 +12,8 @@ namespace NotesApp.ViewModel
 {
     public class NotesVM
     {
+        public bool isEditing { get; set; }
+
         public ObservableCollection<Notebook> Notebooks { get; set; }
         private Notebook selectedNotebook;
 
@@ -32,6 +34,8 @@ namespace NotesApp.ViewModel
 
         public NotesVM()
         {
+            isEditing = false;
+
             NewNotebookCommand = new NewNotebookCommand(this);
             NewNoteCommand = new NewNoteCommand(this);
 

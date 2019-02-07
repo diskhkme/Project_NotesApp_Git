@@ -4,21 +4,40 @@ using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace NotesApp.ViewModel
 {
-    public class NotesVM
+    public class NotesVM : INotifyPropertyChanged
     {
-        public bool isEditing { get; set; }
+        private bool isEditing;
+
+        public bool IsEditing
+        {
+            get { return isEditing; }
+            set {
+                isEditing = value;
+                OnPropertyChanged("IsEditing");
+            }
+        }
+
 
         public ObservableCollection<Notebook> Notebooks { get; set; }
         private Notebook selectedNotebook;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         public Notebook SelectedNotebook
-        {   
+        {
             get { return selectedNotebook; }
             set
             {
@@ -31,13 +50,18 @@ namespace NotesApp.ViewModel
 
         public NewNotebookCommand NewNotebookCommand { get; set; }
         public NewNoteCommand NewNoteCommand { get; set; }
+        public BeginEditCommand BeginEditCommand { get; set; }
+        public HasEditedCommand HasEditedCommand { get; set; }
+
 
         public NotesVM()
         {
-            isEditing = false;
+            IsEditing = false;
 
             NewNotebookCommand = new NewNotebookCommand(this);
             NewNoteCommand = new NewNoteCommand(this);
+            BeginEditCommand = new BeginEditCommand(this);
+            HasEditedCommand = new HasEditedCommand(this);
 
             Notebooks = new ObservableCollection<Notebook>();
             Notes = new ObservableCollection<Note>();
@@ -103,6 +127,21 @@ namespace NotesApp.ViewModel
                         Notes.Add(note);
                     }
                 }
+            }
+        }
+
+        public void StartEditing()
+        {
+            IsEditing = true;
+        }
+
+        public void HasRenamed(Notebook notebook)
+        {
+            if(notebook != null)
+            {
+                DatabaseHelper.Update(notebook);
+                IsEditing = false;
+                ReadNotebooks();
             }
         }
     }

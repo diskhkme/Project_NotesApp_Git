@@ -1,5 +1,7 @@
-﻿using System;
+﻿using NotesApp.ViewModel;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Speech.Recognition;
 using System.Text;
@@ -23,10 +25,15 @@ namespace NotesApp.View
     public partial class NotesWindow : Window
     {
         SpeechRecognitionEngine recognizer;
+        NotesVM viewModel;
 
         public NotesWindow()
         {
             InitializeComponent();
+
+            viewModel = new NotesVM();
+            container.DataContext = viewModel;
+            viewModel.SelectedNoteChanged += ViewModel_SelectedNoteChanged;
 
             //참조 --> 참조 추가 --> System.Speech
             //내 시스템 culture를 가져옴
@@ -52,6 +59,19 @@ namespace NotesApp.View
 
             List<double> fontSizes = new List<double>() { 8, 9, 10, 11, 12, 14, 16, 28, 32, 40 };
             fontSizeComboBox.ItemsSource = fontSizes;
+        }
+
+        //Read File
+        private void ViewModel_SelectedNoteChanged(object sender, EventArgs e)
+        {
+            contentRichTextBox.Document.Blocks.Clear();
+            if(!string.IsNullOrEmpty(viewModel.SelectedNote.FileLocation))
+            {
+                FileStream fileStream = new FileStream(viewModel.SelectedNote.FileLocation, FileMode.Open);
+                TextRange range = new TextRange(contentRichTextBox.Document.ContentStart, contentRichTextBox.Document.ContentEnd);
+                //RPF : Rich Text Format
+                range.Load(fileStream, DataFormats.Rtf);
+            }
         }
 
         //응용 프로그램이 Activate 되었을 때 호출되는 함수 오버라이드
@@ -135,6 +155,20 @@ namespace NotesApp.View
         private void fontSizeComboBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             contentRichTextBox.Selection.ApplyPropertyValue(Inline.FontSizeProperty, fontSizeComboBox.Text);
+        }
+
+        //Write File
+        private void SaveFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            string rtfFile = System.IO.Path.Combine(Environment.CurrentDirectory, $"{viewModel.SelectedNote.Id}.rtf");
+            viewModel.SelectedNote.FileLocation = rtfFile;
+
+            FileStream fileStream = new FileStream(rtfFile, FileMode.Create);
+            TextRange range = new TextRange(contentRichTextBox.Document.ContentStart, contentRichTextBox.Document.ContentEnd);
+            range.Save(fileStream, DataFormats.Rtf);
+
+            viewModel.UpdateSelectedNote();
+
         }
     }
 }

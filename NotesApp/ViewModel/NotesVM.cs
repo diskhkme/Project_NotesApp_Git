@@ -29,6 +29,7 @@ namespace NotesApp.ViewModel
         private Notebook selectedNotebook;
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler SelectedNoteChanged;
 
         private void OnPropertyChanged(string propertyName)
         {
@@ -45,6 +46,19 @@ namespace NotesApp.ViewModel
                 ReadNotes();
             }
         }
+
+        private Note note;
+
+        public Note SelectedNote
+        {
+            get { return note; }
+            set
+            {
+                note = value;
+                SelectedNoteChanged(this, new EventArgs());
+            }
+        }
+
 
         public ObservableCollection<Note> Notes { get; set; }
 
@@ -143,6 +157,11 @@ namespace NotesApp.ViewModel
                 IsEditing = false;
                 ReadNotebooks();
             }
+        }
+
+        public void UpdateSelectedNote()
+        {
+            DatabaseHelper.Update(SelectedNote);
         }
     }
 }
